@@ -1,0 +1,33 @@
+---
+import '../../styles/global.css';
+---
+
+<html lang="ru">
+	<head>
+		<meta charset="utf-8" />
+		<title>Вход — Мир Бесконечного Дождя</title>
+		<meta name="viewport" content="width=device-width" />
+	</head>
+	<body class="min-h-screen bg-neutral-950 text-neutral-100 antialiased">
+		<main class="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-4 px-6">
+			<p class="text-sm text-neutral-500">Подтверждаем вход…</p>
+			<p id="status" class="text-xs text-neutral-600"></p>
+		</main>
+		<script>
+			import { supabase } from '../../lib/supabase';
+			const status = document.getElementById('status')!;
+			supabase.auth.getSession().then(({ data, error }) => {
+				if (error) {
+					status.textContent = 'Ошибка: ' + error.message;
+					return;
+				}
+				if (data.session) {
+					status.textContent = 'Успех. Возвращаемся…';
+					setTimeout(() => { window.location.href = import.meta.env.BASE_URL; }, 500);
+				} else {
+					status.textContent = 'Сессия не найдена. Попробуй снова.';
+				}
+			});
+		</script>
+	</body>
+</html>
