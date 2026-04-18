@@ -1,0 +1,11 @@
+---
+import AnnotationLayerClient from './AnnotationLayerClient';
+
+interface Props {
+  pageSlug: string;
+}
+
+const { pageSlug } = Astro.props;
+---
+
+<AnnotationLayerClient client:only="react" pageSlug={pageSlug} />

@@ -1,0 +1,90 @@
+---
+import '../styles/global.css';
+import AuthButton from '../components/AuthButton';
+import ThemeToggle from '../components/ThemeToggle';
+import Search from '../components/Search';
+import { withBasePath } from '../lib/base-path';
+
+interface Props {
+  title: string;
+  description?: string;
+  headerSubtitle?: string;
+  ogImage?: string;
+}
+
+const {
+  title,
+  description = "Публичный snapshot writer's bible мира WOER.",
+  headerSubtitle = "Публичный снэпшот writer's bible",
+  ogImage = withBasePath('imgs/triton.png'),
+} = Astro.props;
+
+const homeHref = withBasePath();
+const faviconHref = withBasePath('favicon.svg');
+const pageTitle =
+  title === 'Мир Бесконечного Дождя' ? title : `${title} — Мир Бесконечного Дождя`;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="ru" data-theme="storm">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		
+		<title>{pageTitle}</title>
+		<meta name="description" content={description} />
+
+		{/* Open Graph / Facebook */}
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:title" content={pageTitle} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={new URL(ogImage, Astro.site)} />
+
+		{/* Twitter */}
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content={canonicalURL} />
+		<meta property="twitter:title" content={pageTitle} />
+		<meta property="twitter:description" content={description} />
+		<meta property="twitter:image" content={new URL(ogImage, Astro.site)} />
+
+		<link rel="icon" type="image/svg+xml" href={faviconHref} />
+		<link rel="canonical" href={canonicalURL} />
+
+		<script is:inline>
+			(() => {
+				try {
+					const storedTheme = window.localStorage.getItem('woer-theme');
+					const theme = storedTheme === 'mist' ? 'mist' : 'storm';
+					document.documentElement.dataset.theme = theme;
+					document.documentElement.style.colorScheme = theme === 'mist' ? 'light' : 'dark';
+				} catch {
+					document.documentElement.dataset.theme = 'storm';
+					document.documentElement.style.colorScheme = 'dark';
+				}
+			})();
+		</script>
+	</head>
+	<body class="min-h-screen bg-[color:rgb(var(--bg-rgb))] text-[color:rgb(var(--text-rgb))] antialiased">
+		<header class="border-b border-[color:rgba(var(--line-rgb),0.12)] sticky top-0 z-[100] bg-[color:rgb(var(--bg-rgb))]/80 backdrop-blur-md">
+			<div class="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-4 md:flex-row md:items-center md:justify-between">
+				<div class="min-w-0">
+					<a href={homeHref} class="text-sm font-medium text-[color:rgb(var(--text-rgb))]">
+						Мир Бесконечного Дождя
+					</a>
+					<p class="mt-1 text-xs text-[color:rgba(var(--muted-rgb),0.94)]">{headerSubtitle}</p>
+				</div>
+				<div class="flex flex-wrap items-center gap-3 md:justify-end">
+					<Search client:load />
+					<div class="h-4 w-px bg-[color:rgba(var(--line-rgb),0.1)] hidden md:block" />
+					<ThemeToggle client:only="react" />
+					<AuthButton client:only="react" />
+				</div>
+			</div>
+		</header>
+		<slot />
+	</body>
+</html>

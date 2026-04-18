@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { withBasePath } from '../lib/base-path';
 import { supabase } from '../lib/supabase';
 
 type Profile = { display_name: string; avatar_url: string | null; is_admin: boolean };
@@ -40,7 +41,7 @@ export default function AuthButton() {
   }
 
   async function signIn() {
-    const redirectTo = `${window.location.origin}${import.meta.env.BASE_URL}auth/callback`;
+    const redirectTo = `${window.location.origin}${withBasePath('auth/callback')}`;
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo },
@@ -51,13 +52,19 @@ export default function AuthButton() {
     await supabase.auth.signOut();
   }
 
-  if (loading) return <span className="text-xs text-neutral-500">…</span>;
+  if (loading) {
+    return (
+      <span className="inline-flex min-w-[6.5rem] justify-center rounded-md border border-[color:rgba(var(--line-rgb),0.14)] bg-[color:rgba(var(--panel-rgb),0.82)] px-3 py-2 text-xs text-[color:rgba(var(--muted-rgb),0.94)]">
+        ...
+      </span>
+    );
+  }
 
   if (!email) {
     return (
       <button
         onClick={signIn}
-        className="rounded-md border border-neutral-700 bg-neutral-900 px-4 py-2 text-sm text-neutral-100 hover:bg-neutral-800"
+        className="rounded-md border border-[color:rgba(var(--line-rgb),0.16)] bg-[color:rgba(var(--panel-rgb),0.82)] px-4 py-2 text-sm text-[color:rgb(var(--text-rgb))] hover:border-[color:rgba(var(--accent-rgb),0.28)] hover:bg-[color:rgba(var(--panel-strong-rgb),0.96)]"
       >
         Войти через Google
       </button>
@@ -65,20 +72,26 @@ export default function AuthButton() {
   }
 
   return (
-    <div className="flex items-center gap-3 text-sm">
+    <div className="flex items-center gap-3 rounded-md border border-[color:rgba(var(--line-rgb),0.14)] bg-[color:rgba(var(--panel-rgb),0.82)] px-3 py-2 text-sm">
       {profile?.avatar_url && (
-        <img src={profile.avatar_url} alt="" className="h-8 w-8 rounded-full" />
+        <img
+          src={profile.avatar_url}
+          alt=""
+          className="h-8 w-8 rounded-full border border-[color:rgba(var(--line-rgb),0.18)]"
+        />
       )}
       <div className="flex flex-col">
-        <span className="text-neutral-200">{profile?.display_name ?? email}</span>
-        <span className="text-xs text-neutral-500">
+        <span className="text-[color:rgb(var(--text-rgb))]">{profile?.display_name ?? email}</span>
+        <span className="text-xs text-[color:rgba(var(--muted-rgb),0.92)]">
           {email}
-          {profile?.is_admin && <span className="ml-2 text-amber-500">admin</span>}
+          {profile?.is_admin && (
+            <span className="ml-2 text-[color:rgb(var(--accent-strong-rgb))]">admin</span>
+          )}
         </span>
       </div>
       <button
         onClick={signOut}
-        className="rounded-md border border-neutral-800 px-3 py-1 text-xs text-neutral-400 hover:text-neutral-200"
+        className="rounded-md border border-[color:rgba(var(--line-rgb),0.12)] px-3 py-1 text-xs text-[color:rgba(var(--muted-rgb),0.92)] hover:border-[color:rgba(var(--accent-rgb),0.22)] hover:text-[color:rgb(var(--text-rgb))]"
       >
         Выйти
       </button>

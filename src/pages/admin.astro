@@ -1,0 +1,118 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Админка">
+  <main class="mx-auto max-w-7xl px-6 py-12">
+    <h1 class="page-title">Панель модерации</h1>
+    <p class="page-subtitle mt-4">Управление комментариями и аннотациями во всей вики.</p>
+
+    <div id="admin-root" class="mt-12">
+      <div class="p-8 text-center border border-dashed border-[color:rgba(var(--line-rgb),0.2)] rounded-lg">
+        <p class="text-[color:rgba(var(--muted-rgb),0.8)]">Загрузка интерфейса модератора...</p>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  import { supabase } from '../lib/supabase';
+  import { withBasePath } from '../lib/base-path';
+
+  async function init() {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      window.location.href = withBasePath();
+      return;
+    }
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('is_admin')
+      .eq('id', session.user.id)
+      .maybeSingle();
+
+    if (!profile?.is_admin) {
+      alert('Доступ запрещен');
+      window.location.href = withBasePath();
+      return;
+    }
+
+    renderAdmin();
+  }
+
+  async function renderAdmin() {
+    const root = document.getElementById('admin-root');
+    if (!root) return;
+
+    const { data: annotations, error } = await supabase
+      .from('annotations')
+      .select('*, profiles(display_name)')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      root.innerHTML = `<p class="text-red-400">Ошибка загрузки: ${error.message}</p>`;
+      return;
+    }
+
+    if (!annotations || annotations.length === 0) {
+      root.innerHTML = '<p class="text-center py-12 opacity-50">Аннотаций пока нет</p>';
+      return;
+    }
+
+    root.innerHTML = `
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+          <thead>
+            <tr class="border-b border-[color:rgba(var(--line-rgb),0.1)]">
+              <th class="py-4 font-medium px-2">Дата</th>
+              <th class="py-4 font-medium px-2">Автор</th>
+              <th class="py-4 font-medium px-2">Страница</th>
+              <th class="py-4 font-medium px-2">Цитата / Текст</th>
+              <th class="py-4 font-medium px-2 text-right">Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${annotations.map(anno => `
+              <tr class="border-b border-[color:rgba(var(--line-rgb),0.05)] hover:bg-[color:rgba(var(--line-rgb),0.02)]">
+                <td class="py-4 px-2 text-xs opacity-60">${new Date(anno.created_at).toLocaleString('ru-RU')}</td>
+                <td class="py-4 px-2 font-medium">${anno.profiles?.display_name || 'Аноним'}</td>
+                <td class="py-4 px-2 text-xs uppercase tracking-wider text-[color:rgba(var(--accent-rgb),0.8)]">${anno.page_slug}</td>
+                <td class="py-4 px-2">
+                  <div class="max-w-md">
+                    <p class="italic text-xs opacity-50 mb-1 border-l-2 border-[color:rgba(var(--accent-rgb),0.3)] pl-2">"${anno.quote || '...'}"</p>
+                    <p class="font-medium">${anno.body_text}</p>
+                  </div>
+                </td>
+                <td class="py-4 px-2 text-right">
+                  <button
+                    data-id="${anno.id}"
+                    class="delete-btn px-3 py-1 rounded border border-red-500/30 text-red-400 hover:bg-red-500/10 text-xs transition-colors"
+                  >
+                    Удалить
+                  </button>
+                  <a href="${withBasePath(anno.page_slug)}" class="ml-2 px-3 py-1 rounded border border-[color:rgba(var(--accent-rgb),0.3)] text-[color:rgba(var(--accent-rgb),0.9)] hover:bg-[color:rgba(var(--accent-rgb),0.1)] text-xs transition-colors">
+                    Перейти
+                  </a>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    root.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const id = (e.target as HTMLElement).dataset.id;
+        if (!id || !confirm('Точно удалить эту аннотацию и все ответы?')) return;
+
+        const { error } = await supabase.from('annotations').delete().eq('id', id);
+        if (error) alert('Ошибка: ' + error.message);
+        else renderAdmin();
+      });
+    });
+  }
+
+  init();
+</script>

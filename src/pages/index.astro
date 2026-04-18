@@ -1,29 +1,178 @@
 ---
-import '../styles/global.css';
-import AuthButton from '../components/AuthButton';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RainLines from '../components/RainLines';
+import TextReveal from '../components/TextReveal';
+import { withBasePath } from '../lib/base-path';
+
+const entries = (await getCollection('lore')).sort((left, right) => left.data.order - right.data.order);
+const toLoreHref = (slug: string) => withBasePath(`${slug}/`);
+
+const entryById = new Map(entries.map((entry) => [entry.id, entry]));
+
+const featured = [
+  {
+    slug: 'lore',
+    title: 'Мир',
+    summary: 'Легенды, Великая Буря, Сердце Бури и стартовый конфликт.',
+    image: withBasePath('imgs/triton.png'),
+    alt: 'Тритон из мира WOER',
+    note: 'С чего начать',
+  },
+  {
+    slug: 'races',
+    title: 'Расы',
+    summary: 'Четыре амфибийные расы, их физиология, нормы и трение между ролями.',
+    image: withBasePath('imgs/axolotl.png'),
+    alt: 'Аксолотль из мира WOER',
+    note: 'Кто здесь живёт',
+  },
+  {
+    slug: 'characters',
+    title: 'Персонажи',
+    summary: 'Протагонист, ловчиха, шахтёр и фигуры, через которых мир начнёт двигаться.',
+    image: withBasePath('imgs/salamandr.png'),
+    alt: 'Саламандра из мира WOER',
+    note: 'Кого это касается',
+  },
+  {
+    slug: 'factions',
+    title: 'Фракции',
+    summary: 'Гильдии, теневые сети и силы, у которых разные версии спасения мира.',
+    image: withBasePath('imgs/zherlyanka.png'),
+    alt: 'Жерлянка из мира WOER',
+    note: 'Кто тянет за нити',
+  },
+].map((item) => ({
+  ...item,
+  entry: entryById.get(item.slug),
+}));
 ---
 
-<html lang="ru">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Мир Бесконечного Дождя</title>
-	</head>
-	<body class="min-h-screen bg-neutral-950 text-neutral-100 antialiased">
-		<header class="flex items-center justify-end px-6 py-4">
-			<AuthButton client:only="react" />
-		</header>
-		<main class="mx-auto flex min-h-[80vh] max-w-3xl flex-col justify-center px-6 py-16">
-			<p class="mb-4 text-sm uppercase tracking-widest text-neutral-500">Hope Rain Punk</p>
-			<h1 class="mb-6 font-serif text-5xl font-bold leading-tight md:text-7xl">
-				Мир Бесконечного Дождя
-			</h1>
-			<p class="mb-12 max-w-xl text-lg text-neutral-400">
-				Rainpunk-вселенная с вечным дождём, разноцветными молниями и каменными сердцами. Writer's bible в процессе.
-			</p>
-			<p class="text-sm text-neutral-600">Сайт в разработке. День 1: базовый деплой + Google OAuth.</p>
-		</main>
-	</body>
-</html>
+<BaseLayout
+	title="Мир Бесконечного Дождя"
+	description="Публичная wiki-библия мира WOER: дождь, молнии, расы, фракции и ключевые документы лора."
+>
+	<main>
+		<section class="relative overflow-hidden border-b border-[color:rgba(var(--line-rgb),0.12)]">
+			<RainLines client:load />
+			<div class="relative mx-auto max-w-[88rem] px-6 py-10 sm:py-12 lg:px-8 lg:py-14">
+				<div class="hero-grid">
+					<div class="hero-copy-stack">
+					<p class="section-kicker">Hope Rain Punk</p>
+					<TextReveal
+						client:load
+						text="Публичная библия мира про дождь, молнии и каменные сердца"
+						className="hero-title mt-4 block"
+					/>
+					<p class="hero-copy mt-6">
+						Собранный снэпшот ядра writer&apos;s bible WOER. Здесь уже можно читать 10 основных
+						документов лора: миф, физику мира, город, расы, фракции, персонажей и философию.
+					</p>
+					<div class="mt-8 flex flex-wrap gap-3">
+						<a href={toLoreHref('lore')} class="button-primary">
+							Начать с мифа
+						</a>
+						<a href="#sections" class="button-secondary">
+							Все документы
+						</a>
+					</div>
+
+					<div class="mt-8 flex flex-wrap gap-3">
+						<span class="meta-chip">10 документов</span>
+						<span class="meta-chip">Снэпшот из vault</span>
+						<span class="meta-chip">Тёмная и светлая тема</span>
+					</div>
+					</div>
+
+					<div class="hero-art-shell hidden lg:flex" aria-hidden="true">
+						<img
+							src={withBasePath('imgs/triton_happy.png')}
+							alt="Силуэт тритона из мира WOER"
+							class="hero-art-image"
+							loading="eager"
+						/>
+					</div>
+				</div>
+
+				<div class="mt-8 flex justify-center lg:hidden">
+					<div class="hero-art-mobile">
+						<img
+							src={withBasePath('imgs/triton_happy.png')}
+							alt="Силуэт тритона из мира WOER"
+							class="hero-art-image"
+						/>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="mx-auto max-w-[88rem] px-6 py-12 md:py-14 lg:px-8">
+			<div class="max-w-2xl">
+				<p class="section-kicker">Точки входа</p>
+				<h2 class="section-title mt-3">Четыре быстрых маршрута в мир</h2>
+				<p class="section-copy mt-4">
+					Если не хочется читать всё подряд, вот четыре внятных входа: что произошло, кто тут
+					живёт, через кого будет идти история и какие силы держат систему.
+				</p>
+			</div>
+
+			<div class="mt-8 grid gap-4 md:grid-cols-2">
+				{featured.map((feature) =>
+					feature.entry ? (
+						<a href={toLoreHref(feature.slug)} class="feature-card">
+							<div class="feature-visual">
+								<img src={feature.image} alt={feature.alt} loading="lazy" />
+							</div>
+							<div class="p-5">
+								<p class="feature-kicker">{feature.note}</p>
+								<h3 class="feature-title mt-3">{feature.title}</h3>
+								<p class="feature-copy mt-3">{feature.summary}</p>
+								<p class="feature-meta mt-5">
+									{feature.entry.data.order.toString().padStart(2, '0')}
+									{feature.entry.data.emoji ? ` · ${feature.entry.data.emoji}` : ''}
+									{' · '}
+									{feature.entry.data.title}
+								</p>
+							</div>
+						</a>
+					) : null
+				)}
+			</div>
+		</section>
+
+		<section id="sections" class="border-t border-[color:rgba(var(--line-rgb),0.12)]">
+			<div class="mx-auto max-w-[88rem] px-6 py-12 md:py-14 lg:px-8">
+				<div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+					<div class="max-w-2xl">
+						<p class="section-kicker">Все документы</p>
+						<h2 class="section-title mt-3">Полный каркас публичной вики</h2>
+					</div>
+					<p class="section-copy max-w-xl">
+						Каждый раздел собран из markdown-источника vault и сейчас публикуется как отдельная
+						страница.
+					</p>
+				</div>
+
+				<div class="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+					{entries.map((entry) => (
+						<a href={toLoreHref(entry.id)} class="doc-link">
+							<div class="doc-link-top">
+								<p class="doc-index">
+									{entry.data.order.toString().padStart(2, '0')}
+									{entry.data.emoji ? ` · ${entry.data.emoji}` : ''}
+								</p>
+								<span class="doc-open">Открыть</span>
+							</div>
+							<div class="doc-link-body">
+								<h3 class="doc-title">{entry.data.title}</h3>
+								{entry.data.subtitle && <p class="doc-copy mt-3">{entry.data.subtitle}</p>}
+							</div>
+							{entry.data.sourceFile && <p class="doc-source">{entry.data.sourceFile}</p>}
+						</a>
+					))}
+				</div>
+			</div>
+		</section>
+	</main>
+</BaseLayout>

@@ -6,13 +6,16 @@
     "node": ">=22.12.0"
   },
   "scripts": {
+    "sync:lore": "node src/scripts/sync-vault.mjs",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "postbuild": "pagefind --site dist"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.3",
+    "@recogito/text-annotator": "^3.4.9",
     "@supabase/supabase-js": "^2.103.3",
     "@tailwindcss/vite": "^4.2.2",
     "@types/react": "^19.2.14",
@@ -24,5 +27,8 @@
     "react-dom": "^19.2.5",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.2"
+  },
+  "devDependencies": {
+    "pagefind": "^1.5.2"
   }
 }

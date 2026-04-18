@@ -1,0 +1,83 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { withBasePath } from '../lib/base-path';
+import MobileSidebar from './MobileSidebar';
+
+type HeadingLink = {
+  depth: number;
+  slug: string;
+  text: string;
+};
+
+interface Props {
+  currentId: string;
+  entries: CollectionEntry<'lore'>[];
+  headings?: HeadingLink[];
+}
+
+const { currentId, entries, headings = [] } = Astro.props;
+
+const outline = headings
+  .filter((heading) => heading.depth === 2 || heading.depth === 3)
+  .slice(0, 10);
+
+const toLoreHref = (slug: string) => withBasePath(`${slug}/`);
+---
+
+<div class="space-y-6">
+  {/* Mobile Drawer Trigger */}
+  <MobileSidebar 
+    client:load 
+    currentId={currentId} 
+    entries={entries} 
+    toHref={toLoreHref} 
+  />
+
+  {/* Desktop Sidebar (Sidebar List) */}
+	<div class="hidden lg:block">
+		<p class="section-kicker">Разделы</p>
+		<ul class="mt-4 space-y-1">
+			{entries.map((entry) => (
+				<li>
+					<a
+						href={toLoreHref(entry.id)}
+						aria-current={entry.id === currentId ? 'page' : undefined}
+						class:list={[
+							'block rounded-md px-3 py-2 text-sm leading-6 transition-colors',
+							entry.id === currentId
+								? 'bg-[color:rgba(var(--accent-rgb),0.14)] text-[color:rgb(var(--text-rgb))] border border-[color:rgba(var(--accent-rgb),0.1)]'
+								: 'text-[color:rgba(var(--muted-rgb),0.95)] hover:bg-[color:rgba(var(--panel-rgb),0.76)] hover:text-[color:rgb(var(--text-rgb))]'
+						]}
+					>
+						<span class="mr-2 text-[color:rgba(var(--accent-rgb),0.88)] font-mono text-xs">
+							{entry.data.order.toString().padStart(2, '0')}
+						</span>
+						{entry.data.title}
+					</a>
+				</li>
+			))}
+		</ul>
+	</div>
+
+  {/* Page Outline (Secondary Sidebar) */}
+	{outline.length > 0 && (
+		<div class="hidden border-t border-[color:rgba(var(--line-rgb),0.12)] pt-6 xl:block">
+			<p class="section-kicker">Внутри страницы</p>
+			<ul class="mt-4 space-y-2">
+				{outline.map((heading) => (
+					<li>
+						<a
+							href={`#${heading.slug}`}
+							class:list={[
+								'block rounded-md text-sm leading-6 text-[color:rgba(var(--muted-rgb),0.94)] hover:text-[color:rgb(var(--text-rgb))] transition-colors',
+								heading.depth === 3 ? 'pl-4 text-[0.92rem]' : ''
+							]}
+						>
+							{heading.text}
+						</a>
+					</li>
+				))}
+			</ul>
+		</div>
+	)}
+</div>
