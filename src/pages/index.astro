@@ -4,7 +4,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import BackgroundBeams from '../components/BackgroundBeams';
 import TextReveal from '../components/TextReveal';
 import MovingBorderButton from '../components/MovingBorderButton';
-import SpotlightCard from '../components/SpotlightCard';
 import { withBasePath } from '../lib/base-path';
 
 const entries = (await getCollection('lore')).sort((left, right) => left.data.order - right.data.order);
