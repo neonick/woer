@@ -169,27 +169,42 @@ img {
   padding: 0.65rem 1rem;
   font-size: 0.95rem;
   line-height: 1;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, opacity 100ms ease;
+  cursor: pointer;
 }
 
 .button-primary {
-  border: 1px solid rgba(var(--accent-rgb), 0.28);
-  background: rgba(var(--accent-rgb), 0.16);
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
+  background: rgba(var(--accent-rgb), 0.14);
   color: rgb(var(--text-rgb));
 }
 
 .button-primary:hover {
+  border-color: rgba(var(--accent-rgb), 0.5);
   background: rgba(var(--accent-rgb), 0.22);
 }
 
+.button-primary:active {
+  border-color: rgba(var(--accent-rgb), 0.65);
+  background: rgba(var(--accent-rgb), 0.3);
+  opacity: 0.88;
+}
+
 .button-secondary {
-  border: 1px solid rgba(var(--line-rgb), 0.14);
-  background: rgba(var(--panel-rgb), 0.82);
-  color: rgba(var(--muted-rgb), 0.98);
+  border: 1px solid rgba(var(--line-rgb), 0.18);
+  background: rgba(var(--panel-rgb), 0.7);
+  color: rgba(var(--muted-rgb), 0.9);
 }
 
 .button-secondary:hover {
-  border-color: rgba(var(--accent-rgb), 0.24);
+  border-color: rgba(var(--accent-rgb), 0.32);
+  background: rgba(var(--panel-strong-rgb), 0.85);
   color: rgb(var(--text-rgb));
+}
+
+.button-secondary:active {
+  border-color: rgba(var(--accent-rgb), 0.45);
+  opacity: 0.85;
 }
 
 .feature-card,
@@ -235,13 +250,20 @@ img {
     linear-gradient(160deg, rgba(var(--panel-strong-rgb), 0.98), rgba(var(--panel-rgb), 0.88));
   border-bottom: 1px solid rgba(var(--line-rgb), 0.12);
   position: relative;
+  z-index: 1;
 }
 
 .feature-visual img {
   height: 100%;
   object-fit: contain;
   padding: 1.5rem;
+  position: relative;
   width: 100%;
+  z-index: 2;
+}
+
+.spotlight-overlay {
+  z-index: 0 !important;
 }
 
 .doc-link {
@@ -268,7 +290,7 @@ img {
 
 .doc-open {
   align-items: center;
-  border: 1px solid rgba(var(--line-rgb), 0.12);
+  border: 1px solid rgba(var(--line-rgb), 0.16);
   border-radius: 999px;
   color: rgba(var(--muted-rgb), 0.92);
   display: inline-flex;
@@ -276,6 +298,12 @@ img {
   min-height: 1.9rem;
   padding: 0 0.7rem;
   white-space: nowrap;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+
+.doc-link:hover .doc-open {
+  border-color: rgba(var(--accent-rgb), 0.4);
+  color: rgb(var(--text-rgb));
 }
 
 .feature-kicker,
