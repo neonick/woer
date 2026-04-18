@@ -175,7 +175,7 @@ export default function ThreadPanel({
               {isNew ? 'Сохранить' : 'Ответить'}
             </button>
             {isNew && (
-              <button type="button" onClick={onClose} className="px-4 py-2 border border-[color:rgba(var(--line-rgb),0.1)] rounded-md text-xs">
+              <button type="button" onClick={onClose} className="button-secondary text-xs py-2 h-auto px-4">
                 Отмена
               </button>
             )}

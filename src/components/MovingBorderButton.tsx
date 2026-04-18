@@ -8,15 +8,13 @@ interface Props {
   duration?: number;
 }
 
-export default function MovingBorderButton({ href, children, className = '', duration = 2800 }: Props) {
+export default function MovingBorderButton({ href, children, className = '', duration = 2400 }: Props) {
   const pathRef = useRef<SVGRectElement | null>(null);
   const progress = useMotionValue(0);
 
   useAnimationFrame((time) => {
     const length = pathRef.current?.getTotalLength?.() ?? 0;
-    if (length) {
-      progress.set((time * (length / duration)) % length);
-    }
+    if (length) progress.set((time * (length / duration)) % length);
   });
 
   const x = useTransform(progress, (v) => pathRef.current?.getPointAtLength(v).x ?? 0);
@@ -26,43 +24,49 @@ export default function MovingBorderButton({ href, children, className = '', dur
   return (
     <a
       href={href}
-      className={`relative inline-flex h-11 items-center justify-center overflow-hidden rounded-lg px-6 text-sm font-medium text-[color:rgb(var(--text-rgb))] ${className}`}
+      className={`group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-lg px-7 text-sm font-semibold ${className}`}
     >
-      {/* moving border layer */}
-      <div
+      {/* gradient fill background */}
+      <span
         className="absolute inset-0 rounded-[inherit]"
         style={{
-          padding: '1px',
+          background: 'linear-gradient(135deg, rgba(86,188,191,0.28) 0%, rgba(209,150,63,0.22) 100%)',
+        }}
+      />
+
+      {/* moving border mask */}
+      <div
+        className="absolute inset-0 rounded-[inherit] transition-opacity duration-300 group-hover:opacity-100"
+        style={{
+          padding: '1.5px',
           WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
           WebkitMaskComposite: 'xor',
           maskComposite: 'exclude',
         }}
       >
         <svg className="absolute h-full w-full" xmlns="http://www.w3.org/2000/svg">
-          <rect
-            ref={pathRef}
-            fill="none"
-            stroke="none"
-            strokeWidth="0"
-            className="h-full w-full"
-            rx="8"
-            ry="8"
-          />
+          <rect ref={pathRef} fill="none" stroke="none" className="h-full w-full" rx="8" ry="8" />
         </svg>
         <motion.div
-          className="absolute h-12 w-12 opacity-90"
+          className="absolute h-16 w-16"
           style={{
             transform,
-            background: 'radial-gradient(ellipse at center, rgba(209,150,63,0.9) 0%, rgba(86,188,191,0.5) 40%, transparent 70%)',
+            background: 'radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(209,150,63,0.8) 35%, rgba(86,188,191,0.5) 65%, transparent 80%)',
+            filter: 'blur(2px)',
           }}
         />
       </div>
 
-      {/* bg fill */}
-      <span className="absolute inset-[1px] rounded-[7px] bg-[rgba(var(--panel-strong-rgb),0.9)]" />
+      {/* static border glow */}
+      <span
+        className="absolute inset-0 rounded-[inherit] opacity-40 group-hover:opacity-70 transition-opacity duration-300"
+        style={{
+          boxShadow: 'inset 0 0 0 1px rgba(209,150,63,0.5), inset 0 0 12px rgba(86,188,191,0.15)',
+        }}
+      />
 
       {/* content */}
-      <span className="relative z-10">{children}</span>
+      <span className="relative z-10 text-[color:rgb(var(--text-rgb))]">{children}</span>
     </a>
   );
 }

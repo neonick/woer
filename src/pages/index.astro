@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LightningCanvas from '../components/LightningCanvas';
+import RainOverlay from '../components/RainOverlay';
 import TextReveal from '../components/TextReveal';
 import MovingBorderButton from '../components/MovingBorderButton';
 import { withBasePath } from '../lib/base-path';
@@ -56,6 +57,7 @@ const featured = [
 >
 	<main>
 		<section class="relative overflow-hidden border-b border-[color:rgba(var(--line-rgb),0.12)]">
+			<RainOverlay client:only="react" />
 			<LightningCanvas client:only="react" />
 			<div class="relative z-[2] mx-auto max-w-[88rem] px-6 py-10 sm:py-12 lg:px-8 lg:py-14">
 				<div class="hero-grid">
@@ -154,12 +156,10 @@ const featured = [
 
 		<section id="sections" class="border-t border-[color:rgba(var(--line-rgb),0.12)]">
 			<div class="mx-auto max-w-[88rem] px-6 py-12 md:py-14 lg:px-8">
-				<div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-					<div class="max-w-2xl">
-						<p class="section-kicker">Все документы</p>
-						<h2 class="section-title mt-3">Полный каркас публичной вики</h2>
-					</div>
-					<p class="section-copy max-w-xl">
+				<div class="max-w-2xl">
+					<p class="section-kicker">Все документы</p>
+					<h2 class="section-title mt-3">Полный каркас публичной вики</h2>
+					<p class="section-copy mt-4">
 						Каждый раздел собран из markdown-источника vault и сейчас публикуется как отдельная
 						страница.
 					</p>
