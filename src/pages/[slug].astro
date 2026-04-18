@@ -53,10 +53,6 @@ const toLoreHref = (slug: string) => withBasePath(`${slug}/`);
 					</p>
 					<h1 class="page-title mt-4">{entry.data.title}</h1>
 					{entry.data.subtitle && <p class="page-subtitle mt-4">{entry.data.subtitle}</p>}
-					<div class="mt-6 flex flex-wrap gap-3">
-						{entry.data.sourceFile && <span class="meta-chip">{entry.data.sourceFile}</span>}
-						<span class="meta-chip">{headings.length} заголовков</span>
-					</div>
 				</div>
 
 				<LoreHydrator characters={charData} factions={factionData} client:only="react" />
