@@ -153,26 +153,24 @@ const featured = [
 			<div class="mx-auto max-w-[88rem] px-6 py-12 md:py-14 lg:px-8">
 				<div>
 					<p class="section-kicker">Все документы</p>
-					<h2 class="section-title mt-3 whitespace-nowrap">Полный каркас публичной вики</h2>
+					<h2 class="section-title mt-3 whitespace-nowrap">Все разделы лора</h2>
 					<p class="section-copy mt-4 whitespace-nowrap">
 						Десять разделов: миф, физика мира, расы, сердца, молнии, общество, город, фракции, персонажи, философия.
 					</p>
 				</div>
 
-				<div class="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+				<div class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5">
 					{entries.map((entry) => (
-						<a href={toLoreHref(entry.id)} class="doc-link">
-							<div class="doc-link-top">
-								<p class="doc-index">
-									{entry.data.order.toString().padStart(2, '0')}
-								</p>
-								<span class="doc-open">Открыть</span>
-							</div>
-							<div class="doc-link-body">
-								<h3 class="doc-title">{entry.data.title}</h3>
-								{entry.data.subtitle && <p class="doc-copy mt-3">{entry.data.subtitle}</p>}
-							</div>
-							{entry.data.sourceFile && <p class="doc-source">{entry.data.sourceFile}</p>}
+						<a href={toLoreHref(entry.id)} class="lore-card">
+							<span class="lore-card-bar" aria-hidden="true" />
+							<span class="lore-card-num" aria-hidden="true">
+								{entry.data.order.toString().padStart(2, '0')}
+							</span>
+							<h3 class="lore-card-title">{entry.data.title}</h3>
+							{entry.data.subtitle && (
+								<p class="lore-card-sub">{entry.data.subtitle}</p>
+							)}
+							<span class="lore-card-arrow" aria-hidden="true">→</span>
 						</a>
 					))}
 				</div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Moon, Sun } from 'lucide-react';
 
 type Theme = 'storm' | 'mist';
 
@@ -38,7 +39,7 @@ export default function ThemeToggle() {
             : 'text-[color:rgba(var(--muted-rgb),0.92)] hover:text-[color:rgb(var(--text-rgb))]'
         }`}
       >
-        Тьма
+        <Moon size={13} className="inline -mt-px" />
       </button>
       <button
         type="button"
@@ -49,7 +50,7 @@ export default function ThemeToggle() {
             : 'text-[color:rgba(var(--muted-rgb),0.92)] hover:text-[color:rgb(var(--text-rgb))]'
         }`}
       >
-        Свет
+        <Sun size={13} className="inline -mt-px" />
       </button>
     </div>
   );

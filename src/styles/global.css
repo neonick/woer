@@ -443,6 +443,96 @@ img {
   max-width: 46rem;
 }
 
+/* ── lore-card (Все разделы лора grid) ────────────────────────────────────── */
+
+.lore-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem 1.1rem 1rem;
+  border: 1px solid rgba(var(--line-rgb), 0.12);
+  border-radius: var(--radius);
+  background: rgba(var(--panel-rgb), 0.7);
+  overflow: hidden;
+  transition: border-color 220ms ease, background 220ms ease, transform 220ms ease;
+}
+
+.lore-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 120% 80% at 50% 110%,
+    rgba(var(--accent-rgb), 0.12) 0%,
+    transparent 70%);
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+
+.lore-card:hover {
+  border-color: rgba(var(--accent-rgb), 0.38);
+  background: rgba(var(--panel-strong-rgb), 0.9);
+  transform: translateY(-3px);
+}
+
+.lore-card:hover::after { opacity: 1; }
+
+.lore-card-bar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    rgba(var(--accent-rgb), 0) 0%,
+    rgba(var(--accent-rgb), 0.7) 50%,
+    rgba(var(--accent-strong-rgb), 0.5) 100%);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 280ms ease;
+}
+
+.lore-card:hover .lore-card-bar { transform: scaleX(1); }
+
+.lore-card-num {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: rgba(var(--accent-rgb), 0.8);
+}
+
+.lore-card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: rgb(var(--text-rgb));
+  line-height: 1.25;
+}
+
+.lore-card-sub {
+  font-size: 0.8rem;
+  color: rgba(var(--muted-rgb), 0.85);
+  line-height: 1.5;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.lore-card-arrow {
+  display: block;
+  font-size: 0.9rem;
+  color: rgba(var(--accent-rgb), 0.5);
+  margin-top: 0.5rem;
+  transition: color 220ms ease, transform 220ms ease;
+}
+
+.lore-card:hover .lore-card-arrow {
+  color: rgba(var(--accent-rgb), 1);
+  transform: translateX(4px);
+}
+
+/* ── /lore-card ─────────────────────────────────────────────────────────────── */
+
 .meta-chip {
   align-items: center;
   border: 1px solid rgba(var(--line-rgb), 0.12);
