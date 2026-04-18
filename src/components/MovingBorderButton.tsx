@@ -24,13 +24,20 @@ export default function MovingBorderButton({ href, children, className = '', dur
   return (
     <a
       href={href}
-      className={`group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-lg px-7 text-sm font-semibold transition-transform duration-200 hover:-translate-y-px ${className}`}
+      className={`group relative isolate inline-flex h-12 items-center justify-center overflow-hidden rounded-lg px-7 text-sm font-semibold transition-transform duration-200 hover:-translate-y-px ${className}`}
     >
       {/* gradient fill background */}
       <span
         className="absolute inset-0 rounded-[inherit]"
         style={{
-          background: 'linear-gradient(135deg, rgba(86,188,191,0.28) 0%, rgba(209,150,63,0.22) 100%)',
+          background: 'linear-gradient(135deg, rgb(var(--panel-strong-rgb) / 0.98) 0%, rgb(var(--panel-rgb) / 0.96) 100%)',
+        }}
+      />
+
+      <span
+        className="absolute inset-[1px] rounded-[inherit] pointer-events-none"
+        style={{
+          background: 'linear-gradient(135deg, rgba(86,188,191,0.22) 0%, rgba(209,150,63,0.18) 100%)',
         }}
       />
 

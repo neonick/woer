@@ -8,19 +8,18 @@ import { withBasePath } from '../lib/base-path';
 interface Props {
   title: string;
   description?: string;
-  headerSubtitle?: string;
   ogImage?: string;
 }
 
 const {
   title,
   description = "Мир бесконечного дождя — Hope Rain Punk.",
-  headerSubtitle = "Hope Rain Punk",
   ogImage = withBasePath('imgs/triton.png'),
 } = Astro.props;
 
 const homeHref = withBasePath();
 const faviconHref = withBasePath('favicon.svg');
+const headerLogoHref = withBasePath('tumari_logo.svg');
 const pageTitle =
   title === 'Мир Бесконечного Дождя' ? title : `${title} — Мир Бесконечного Дождя`;
 
@@ -75,10 +74,15 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 		<header class="border-b border-[color:rgba(var(--line-rgb),0.12)] sticky top-0 z-[100] bg-[color:rgb(var(--bg-rgb))]/80 backdrop-blur-md">
 			<div class="mx-auto flex max-w-[88rem] flex-col gap-4 px-6 py-4 md:flex-row md:items-center md:justify-between">
 				<div class="min-w-0">
-					<a href={homeHref} class="text-sm font-medium text-[color:rgb(var(--text-rgb))]">
-						Мир Бесконечного Дождя
+					<a href={homeHref} class="flex max-w-full items-center gap-3 text-[color:rgb(var(--text-rgb))]">
+						<img
+							src={headerLogoHref}
+							alt="Логотип Тумари"
+							class="h-12 w-12 shrink-0 rounded-[6px] object-contain"
+							loading="eager"
+						/>
+						<span class="min-w-0 text-sm font-medium">Тумари: Мир Бесконечного Дождя</span>
 					</a>
-					<p class="mt-1 text-xs text-[color:rgba(var(--muted-rgb),0.94)]">{headerSubtitle}</p>
 				</div>
 				<div class="flex flex-wrap items-stretch gap-3 md:justify-end">
 					<Search client:load />
