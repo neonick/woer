@@ -200,12 +200,33 @@ img {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative;
 }
 
 .feature-card:hover,
 .doc-link:hover {
   border-color: rgba(var(--accent-rgb), 0.26);
   transform: translateY(-2px);
+}
+
+.spotlight-overlay {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 200ms ease;
+  background: radial-gradient(
+    500px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(86, 188, 191, 0.13),
+    rgba(209, 150, 63, 0.05) 40%,
+    transparent 70%
+  );
+}
+
+.spotlight-card:hover .spotlight-overlay {
+  opacity: 1;
 }
 
 .feature-visual {
