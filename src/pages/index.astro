@@ -1,8 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import RainLines from '../components/RainLines';
+import BackgroundBeams from '../components/BackgroundBeams';
 import TextReveal from '../components/TextReveal';
+import MovingBorderButton from '../components/MovingBorderButton';
+import SpotlightCard from '../components/SpotlightCard';
 import { withBasePath } from '../lib/base-path';
 
 const entries = (await getCollection('lore')).sort((left, right) => left.data.order - right.data.order);
@@ -55,7 +57,7 @@ const featured = [
 >
 	<main>
 		<section class="relative overflow-hidden border-b border-[color:rgba(var(--line-rgb),0.12)]">
-			<RainLines client:load />
+			<BackgroundBeams client:load />
 			<div class="relative mx-auto max-w-[88rem] px-6 py-10 sm:py-12 lg:px-8 lg:py-14">
 				<div class="hero-grid">
 					<div class="hero-copy-stack">
@@ -70,9 +72,9 @@ const featured = [
 						документов лора: миф, физику мира, город, расы, фракции, персонажей и философию.
 					</p>
 					<div class="mt-8 flex flex-wrap gap-3">
-						<a href={toLoreHref('lore')} class="button-primary">
+						<MovingBorderButton href={toLoreHref('lore')} client:load>
 							Начать с мифа
-						</a>
+						</MovingBorderButton>
 						<a href="#sections" class="button-secondary">
 							Все документы
 						</a>
@@ -120,7 +122,7 @@ const featured = [
 			<div class="mt-8 grid gap-4 md:grid-cols-2">
 				{featured.map((feature) =>
 					feature.entry ? (
-						<a href={toLoreHref(feature.slug)} class="feature-card">
+						<SpotlightCard href={toLoreHref(feature.slug)} client:load>
 							<div class="feature-visual">
 								<img src={feature.image} alt={feature.alt} loading="lazy" />
 							</div>
@@ -130,12 +132,11 @@ const featured = [
 								<p class="feature-copy mt-3">{feature.summary}</p>
 								<p class="feature-meta mt-5">
 									{feature.entry.data.order.toString().padStart(2, '0')}
-									{feature.entry.data.emoji ? ` · ${feature.entry.data.emoji}` : ''}
 									{' · '}
 									{feature.entry.data.title}
 								</p>
 							</div>
-						</a>
+						</SpotlightCard>
 					) : null
 				)}
 			</div>
@@ -160,7 +161,6 @@ const featured = [
 							<div class="doc-link-top">
 								<p class="doc-index">
 									{entry.data.order.toString().padStart(2, '0')}
-									{entry.data.emoji ? ` · ${entry.data.emoji}` : ''}
 								</p>
 								<span class="doc-open">Открыть</span>
 							</div>

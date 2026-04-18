@@ -49,8 +49,7 @@ const toLoreHref = (slug: string) => withBasePath(`${slug}/`);
 						Ко всем разделам
 					</a>
 					<p class="section-kicker mt-6">
-						{entry.data.emoji ? `${entry.data.emoji} · ` : ''}
-						Раздел {entry.data.order.toString().padStart(2, '0')}
+							Раздел {entry.data.order.toString().padStart(2, '0')}
 					</p>
 					<h1 class="page-title mt-4">{entry.data.title}</h1>
 					{entry.data.subtitle && <p class="page-subtitle mt-4">{entry.data.subtitle}</p>}
