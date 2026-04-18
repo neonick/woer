@@ -26,31 +26,20 @@ export default function ThemeToggle() {
   }
 
   return (
-    <div
-      className="inline-flex items-center gap-1 rounded-md border border-[color:rgba(var(--line-rgb),0.14)] bg-[color:rgba(var(--panel-rgb),0.82)] p-1"
-      aria-label="Тема сайта"
-    >
+    <div className="theme-toggle" aria-label="Тема сайта">
       <button
         type="button"
         onClick={() => handleThemeChange('storm')}
-        className={`rounded-[6px] px-3 py-2 text-xs ${
-          theme === 'storm'
-            ? 'bg-[color:rgba(var(--accent-rgb),0.16)] text-[color:rgb(var(--text-rgb))]'
-            : 'text-[color:rgba(var(--muted-rgb),0.92)] hover:text-[color:rgb(var(--text-rgb))]'
-        }`}
+        className={`theme-btn${theme === 'storm' ? ' theme-btn--active' : ''}`}
       >
-        <Moon size={13} className="inline -mt-px" />
+        <Moon size={13} />
       </button>
       <button
         type="button"
         onClick={() => handleThemeChange('mist')}
-        className={`rounded-[6px] px-3 py-2 text-xs ${
-          theme === 'mist'
-            ? 'bg-[color:rgba(var(--accent-rgb),0.16)] text-[color:rgb(var(--text-rgb))]'
-            : 'text-[color:rgba(var(--muted-rgb),0.92)] hover:text-[color:rgb(var(--text-rgb))]'
-        }`}
+        className={`theme-btn${theme === 'mist' ? ' theme-btn--active' : ''}`}
       >
-        <Sun size={13} className="inline -mt-px" />
+        <Sun size={13} />
       </button>
     </div>
   );

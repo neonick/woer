@@ -140,7 +140,7 @@ export default function Search() {
             </div>
             
             <div className="p-3 border-t border-[color:rgba(var(--line-rgb),0.08)] bg-[color:rgba(var(--bg-soft-rgb),0.4)] flex justify-between items-center text-[10px] text-[color:rgba(var(--muted-rgb),0.4)] uppercase tracking-widest font-medium">
-              <span>Pagefind</span>
+              <span></span>
               <div className="flex gap-3 text-right">
                 <span>Esc - закрыть</span>
                 <span>Enter - перейти</span>
@@ -165,7 +165,7 @@ export default function Search() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-3 px-3 py-1.5 rounded-md border border-[color:rgba(var(--line-rgb),0.12)] bg-[color:rgba(var(--panel-rgb),0.5)] text-xs text-[color:rgba(var(--muted-rgb),0.8)] hover:border-[color:rgba(var(--accent-rgb),0.25)] hover:text-[color:rgb(var(--text-rgb))] transition-all group"
+        className="flex items-center gap-3 h-9 px-3 rounded-md border border-[color:rgba(var(--line-rgb),0.12)] bg-[color:rgba(var(--panel-rgb),0.5)] text-xs text-[color:rgba(var(--muted-rgb),0.8)] hover:border-[color:rgba(var(--accent-rgb),0.25)] hover:text-[color:rgb(var(--text-rgb))] transition-all group"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-60 group-hover:opacity-100">
           <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>

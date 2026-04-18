@@ -63,18 +63,18 @@ const toLoreHref = (slug: string) => withBasePath(`${slug}/`);
 
 				<nav class="mt-14 grid gap-3 border-t border-[color:rgba(var(--line-rgb),0.12)] pt-6 md:grid-cols-2">
 					{previousEntry ? (
-						<a href={toLoreHref(previousEntry.id)} class="doc-link h-full">
+						<a href={toLoreHref(previousEntry.id)} class="doc-link doc-link--nav">
 							<p class="doc-source">Назад</p>
-							<p class="doc-title mt-3">{previousEntry.data.title}</p>
+							<p class="doc-title mt-1">{previousEntry.data.title}</p>
 						</a>
 					) : (
 						<div />
 					)}
 
 					{nextEntry ? (
-						<a href={toLoreHref(nextEntry.id)} class="doc-link h-full md:justify-self-end">
+						<a href={toLoreHref(nextEntry.id)} class="doc-link doc-link--nav md:justify-self-end md:text-right">
 							<p class="doc-source">Дальше</p>
-							<p class="doc-title mt-3">{nextEntry.data.title}</p>
+							<p class="doc-title mt-1">{nextEntry.data.title}</p>
 						</a>
 					) : null}
 				</nav>

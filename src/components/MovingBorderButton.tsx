@@ -24,7 +24,7 @@ export default function MovingBorderButton({ href, children, className = '', dur
   return (
     <a
       href={href}
-      className={`group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-lg px-7 text-sm font-semibold ${className}`}
+      className={`group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-lg px-7 text-sm font-semibold transition-transform duration-200 hover:-translate-y-px ${className}`}
     >
       {/* gradient fill background */}
       <span
@@ -32,6 +32,18 @@ export default function MovingBorderButton({ href, children, className = '', dur
         style={{
           background: 'linear-gradient(135deg, rgba(86,188,191,0.28) 0%, rgba(209,150,63,0.22) 100%)',
         }}
+      />
+
+      {/* hover brighten overlay */}
+      <span
+        className="absolute inset-0 rounded-[inherit] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+        style={{ background: 'rgba(255,255,255,0.07)' }}
+      />
+
+      {/* outer glow on hover */}
+      <span
+        className="absolute -inset-px rounded-[inherit] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+        style={{ boxShadow: '0 0 18px rgba(86,188,191,0.38), 0 4px 24px rgba(209,150,63,0.22)' }}
       />
 
       {/* moving border mask */}

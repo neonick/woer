@@ -12,19 +12,19 @@ interface Drop {
 const ANGLE_RAD = 12 * (Math.PI / 180); // 12° diagonal
 const DX_RATIO  = Math.tan(ANGLE_RAD);  // horizontal shift per vertical px
 
-function makeDrop(h: number): Drop {
-  const layer   = Math.random() < 0.45 ? 0 : Math.random() < 0.65 ? 1 : 2;
+function makeDrop(): Drop {
+  const layer   = Math.random() < 0.40 ? 0 : Math.random() < 0.70 ? 1 : 2;
   const configs = [
-    { lenMin: 8,  lenMax: 15, speedMin: 6,  speedMax: 10, opMin: 0.04, opMax: 0.10 }, // back
-    { lenMin: 14, lenMax: 24, speedMin: 11, speedMax: 17, opMin: 0.11, opMax: 0.20 }, // mid
-    { lenMin: 22, lenMax: 38, speedMin: 18, speedMax: 28, opMin: 0.22, opMax: 0.42 }, // front
+    { lenMin: 5,  lenMax: 10, speedMin: 2.1, speedMax: 4.2, opMin: 0.03, opMax: 0.08 }, // back
+    { lenMin: 14, lenMax: 24, speedMin: 8.4, speedMax: 12.6, opMin: 0.14, opMax: 0.26 }, // mid
+    { lenMin: 34, lenMax: 60, speedMin: 18.2, speedMax: 28.0, opMin: 0.44, opMax: 0.70 }, // front
   ];
   const c = configs[layer];
   const len   = c.lenMin + Math.random() * (c.lenMax - c.lenMin);
   const speed = c.speedMin + Math.random() * (c.speedMax - c.speedMin);
   return {
     x:       Math.random(),
-    y:      -len - Math.random() * h,     // start above canvas, spread out
+    y:      0, // overridden by caller on init; on reset set via tick()
     len,
     speed,
     opacity: c.opMin + Math.random() * (c.opMax - c.opMin),
@@ -50,7 +50,13 @@ export default function RainOverlay() {
       h = canvas.offsetHeight;
       canvas.width  = w;
       canvas.height = h;
-      drops = Array.from({ length: 57 }, () => makeDrop(h));
+      const N = 180;
+      drops = Array.from({ length: N }, (_, i) => {
+        const d = makeDrop();
+        // Stratify y evenly across visible height so no two drops start in sync
+        d.y = (i / N) * (h + d.len) - d.len;
+        return d;
+      });
     }
     resize();
     const ro = new ResizeObserver(resize);
@@ -78,7 +84,7 @@ export default function RainOverlay() {
         ctx.lineTo(x2, y2);
         ctx.strokeStyle = `rgba(${color},1)`;
         ctx.globalAlpha = d.opacity;
-        ctx.lineWidth   = d.layer === 2 ? 1.1 : d.layer === 1 ? 0.8 : 0.6;
+        ctx.lineWidth   = d.layer === 2 ? 1.3 : d.layer === 1 ? 0.9 : 0.65;
         ctx.lineCap     = 'round';
         ctx.stroke();
 
@@ -86,9 +92,10 @@ export default function RainOverlay() {
         d.y += d.speed;
         d.x += d.speed * DX_RATIO / h; // drift right proportional to fall
 
-        // reset when below canvas
+        // reset when below canvas — случайный разброс по y выше экрана,
+        // чтобы капли не сбрасывались в одну точку и не шли группами
         if (d.y > h + d.len) {
-          d.y = -d.len;
+          d.y = -d.len - Math.random() * h * 1.5;
           d.x = Math.random();
         }
       }
@@ -105,7 +112,7 @@ export default function RainOverlay() {
     <canvas
       ref={ref}
       className="pointer-events-none absolute inset-0 h-full w-full"
-      style={{ zIndex: 0 }}
+      style={{ zIndex: 1 }}
     />
   );
 }

@@ -116,6 +116,7 @@ interface Strike {
   glow: string;
   flashes: number[];   // absolute timestamps of each flash
   done: boolean;
+  sx: number;          // 0-1 horizontal origin (for ambient glow direction)
 }
 
 const FLASH_MS = 130;
@@ -135,12 +136,18 @@ export default function LightningCanvas() {
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d')!;
+    const cv = canvas; // non-null alias for use inside nested closures
+    const ctx = cv.getContext('2d')!;
 
-    function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
+    function resize() { cv.width = cv.offsetWidth; cv.height = cv.offsetHeight; }
     resize();
     const ro = new ResizeObserver(resize);
-    ro.observe(canvas);
+    ro.observe(cv);
+
+    // ambient glow overlay — sits above canvas, below hero text
+    const glowEl = document.createElement('div');
+    glowEl.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:1;opacity:0;transition:opacity 35ms ease';
+    cv.parentElement?.appendChild(glowEl);
 
     const strikes: Strike[] = [];
     let raf = 0;
@@ -148,7 +155,7 @@ export default function LightningCanvas() {
     let nextTimer: ReturnType<typeof setTimeout> | null = null;
 
     function spawn(ex?: number, ey?: number) {
-      const w = canvas.width, h = canvas.height;
+      const w = cv.width, h = cv.height;
       const sx = w * (0.08 + Math.random() * 0.84);
       const tx = ex ?? w * (0.05 + Math.random() * 0.9);
       const ty = ey ?? h * (0.5 + Math.random() * 0.5);
@@ -158,6 +165,7 @@ export default function LightningCanvas() {
         core: p.core, glow: p.glow,
         flashes: makeFlashes(performance.now()),
         done: false,
+        sx: sx / cv.width,
       });
       if (!rafRunning) { rafRunning = true; raf = requestAnimationFrame(tick); }
     }
@@ -169,7 +177,7 @@ export default function LightningCanvas() {
     }
 
     function tick(now: number) {
-      const w = canvas.width, h = canvas.height;
+      const w = cv.width, h = cv.height;
       ctx.clearRect(0, 0, w, h);
       let anyAlive = false;
 
@@ -209,6 +217,23 @@ export default function LightningCanvas() {
         }
       }
 
+      // ambient glow: find brightest active flash
+      let bestAlpha = 0;
+      let bestStrike: Strike | null = null;
+      for (const s of strikes) {
+        if (s.done) continue;
+        const age = now - s.flashes[s.flashes.length - 1];
+        const a = Math.max(0, 1 - age / FLASH_MS);
+        if (a > bestAlpha) { bestAlpha = a; bestStrike = s; }
+      }
+      if (bestAlpha > 0.01 && bestStrike) {
+        const xPct = Math.round(bestStrike.sx * 100);
+        glowEl.style.background = `radial-gradient(ellipse 70% 90% at ${xPct}% 10%, rgba(${bestStrike.glow},0.10) 0%, rgba(${bestStrike.glow},0.04) 40%, transparent 75%)`;
+        glowEl.style.opacity = String(Math.min(1, bestAlpha));
+      } else {
+        glowEl.style.opacity = '0';
+      }
+
       // compact done strikes
       for (let i = strikes.length - 1; i >= 0; i--) {
         if (strikes[i].done) strikes.splice(i, 1);
@@ -223,24 +248,15 @@ export default function LightningCanvas() {
     }
 
     // mouse → aim
-    const section = canvas.parentElement ?? canvas;
+    const section = cv.parentElement ?? cv;
     function onMouseMove(e: Event) {
-      // next scheduled spawn will aim here; store loosely
-      (canvas as any)._mx = (e as MouseEvent).clientX - canvas.getBoundingClientRect().left;
-      (canvas as any)._my = (e as MouseEvent).clientY - canvas.getBoundingClientRect().top;
+      (cv as any)._mx = (e as MouseEvent).clientX - cv.getBoundingClientRect().left;
+      (cv as any)._my = (e as MouseEvent).clientY - cv.getBoundingClientRect().top;
     }
     function onClick(e: Event) {
       const me = e as MouseEvent;
-      const r = canvas.getBoundingClientRect();
+      const r = cv.getBoundingClientRect();
       spawn(me.clientX - r.left, me.clientY - r.top);
-    }
-
-    // wrap spawn to use current mouse position if available
-    const origSpawn = spawn;
-    function spawnMaybeAimed() {
-      const mx = (canvas as any)._mx;
-      const my = (canvas as any)._my;
-      if (mx != null) origSpawn(mx, my); else origSpawn();
     }
 
     section.addEventListener('mousemove', onMouseMove);
@@ -254,6 +270,7 @@ export default function LightningCanvas() {
       ro.disconnect();
       section.removeEventListener('mousemove', onMouseMove);
       section.removeEventListener('click', onClick);
+      glowEl.remove();
     };
   }, []);
 
